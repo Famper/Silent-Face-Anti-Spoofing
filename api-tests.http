@@ -1,0 +1,35 @@
+### Health check
+GET http://localhost:8000/health
+
+### Check real face - image_T1.jpg
+POST http://localhost:8000/check
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="image"; filename="image_T1.jpg"
+Content-Type: image/jpeg
+
+< ./images/sample/image_T1.jpg
+--boundary--
+
+### Check fake face - image_F1.jpg
+POST http://localhost:8000/check
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="image"; filename="image_F1.jpg"
+Content-Type: image/jpeg
+
+< ./images/sample/image_F1.jpg
+--boundary--
+
+### Check fake face - image_F2.jpg
+POST http://localhost:8000/check
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="image"; filename="image_F2.jpg"
+Content-Type: image/jpeg
+
+< ./images/sample/image_F2.jpg
+--boundary--
