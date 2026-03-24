@@ -1,0 +1,14 @@
+services:
+  anti-spoof-api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - venv_data:/app/.venv
+    environment:
+      - MODEL_DIR=./resources/anti_spoof_models
+      - DEVICE_ID=0
+    restart: unless-stopped
+
+volumes:
+  venv_data:
