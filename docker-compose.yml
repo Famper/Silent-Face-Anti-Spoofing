@@ -2,7 +2,7 @@ services:
   anti-spoof-api:
     build: .
     ports:
-      - "8000:8000"
+      - "8888:8000"
     volumes:
       - venv_data:/app/.venv
     environment:
