@@ -1,14 +1,54 @@
 services:
   anti-spoof-api:
     build: .
-    ports:
-      - "8888:8000"
+    expose:
+      - "8000"
     volumes:
       - venv_data:/app/.venv
     environment:
       - MODEL_DIR=./resources/anti_spoof_models
       - DEVICE_ID=0
     restart: unless-stopped
+    networks:
+      - internal
+
+  nginx:
+    image: nginx:1.27-alpine
+    depends_on:
+      - anti-spoof-api
+    ports:
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - letsencrypt:/etc/letsencrypt:ro
+    environment:
+      - SERVER_NAME=${SERVER_NAME:-example.com}
+      - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/conf.d
+      - NGINX_ENVSUBST_FILTER=SERVER_NAME
+    restart: unless-stopped
+    networks:
+      - internal
+
+  # Run on demand to issue/renew certificates via DNS-01 challenge
+  # (port 80 is intentionally closed, so HTTP-01 cannot be used).
+  #
+  # First issue:
+  #   SERVER_NAME=your.domain docker compose run --rm certbot \
+  #     certonly --manual --preferred-challenges dns \
+  #              -d your.domain --agree-tos -m you@your.domain
+  # Renew:
+  #   docker compose run --rm certbot renew
+  certbot:
+    image: certbot/certbot:latest
+    profiles: ["certbot"]
+    volumes:
+      - letsencrypt:/etc/letsencrypt
+    entrypoint: ["certbot"]
+
+networks:
+  internal:
 
 volumes:
   venv_data:
+  letsencrypt:
