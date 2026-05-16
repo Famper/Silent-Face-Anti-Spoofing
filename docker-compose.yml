@@ -1,14 +1,21 @@
 services:
   anti-spoof-api:
     build: .
-    ports:
-      - "8888:8000"
+    container_name: anti-spoof-api
+    expose:
+      - "8000"
     volumes:
       - venv_data:/app/.venv
     environment:
       - MODEL_DIR=./resources/anti_spoof_models
       - DEVICE_ID=0
     restart: unless-stopped
+    networks:
+      - webproxy
+
+networks:
+  webproxy:
+    external: true
 
 volumes:
   venv_data:

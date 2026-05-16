@@ -1,8 +1,8 @@
 ### Health check
-GET http://localhost:8000/health
+GET https://example.com/health
 
 ### Check real face - image_T1.jpg
-POST http://localhost:8000/check
+POST https://example.com/check
 Content-Type: multipart/form-data; boundary=boundary
 
 --boundary
@@ -13,7 +13,7 @@ Content-Type: image/jpeg
 --boundary--
 
 ### Check fake face - image_F1.jpg
-POST http://localhost:8000/check
+POST https://example.com/check
 Content-Type: multipart/form-data; boundary=boundary
 
 --boundary
@@ -24,7 +24,7 @@ Content-Type: image/jpeg
 --boundary--
 
 ### Check fake face - image_F2.jpg
-POST http://localhost:8000/check
+POST https://example.com/check
 Content-Type: multipart/form-data; boundary=boundary
 
 --boundary
