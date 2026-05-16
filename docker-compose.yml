@@ -1,6 +1,7 @@
 services:
   anti-spoof-api:
     build: .
+    container_name: anti-spoof-api
     expose:
       - "8000"
     volumes:
@@ -10,31 +11,11 @@ services:
       - DEVICE_ID=0
     restart: unless-stopped
     networks:
-      - internal
-
-  nginx:
-    image: nginx:1.27-alpine
-    depends_on:
-      - anti-spoof-api
-    ports:
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/templates:/etc/nginx/templates:ro
-      # Certificates are managed on the host (e.g. by the system certbot
-      # package with a systemd timer). Override LETSENCRYPT_DIR if your
-      # certs live elsewhere.
-      - ${LETSENCRYPT_DIR:-/etc/letsencrypt}:/etc/letsencrypt:ro
-    environment:
-      - SERVER_NAME=${SERVER_NAME:-example.com}
-      - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/conf.d
-      - NGINX_ENVSUBST_FILTER=SERVER_NAME
-    restart: unless-stopped
-    networks:
-      - internal
+      - webproxy
 
 networks:
-  internal:
+  webproxy:
+    external: true
 
 volumes:
   venv_data:
